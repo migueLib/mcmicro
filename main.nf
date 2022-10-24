@@ -100,6 +100,7 @@ include {dearray}        from "$projectDir/modules/dearray"
 include {segmentation}   from "$projectDir/modules/segmentation"
 include {quantification} from "$projectDir/modules/quantification"
 include {downstream}     from "$projectDir/modules/downstream"
+include {mistyr}         from "$projectDir/modules/neighborhood"
 include {viz}            from "$projectDir/modules/viz"
 
 // Define the primary mcmicro workflow
@@ -135,6 +136,9 @@ workflow {
     // Spatial feature tables -> cell state calling
     sft = quantification.out.mix(pre_qty)
     downstream(mcp, sft)
+
+    // MISTyR
+    mistyr(mcp, sft, chMrk)
 
     // Vizualization
     viz(mcp, allimg)

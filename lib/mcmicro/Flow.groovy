@@ -32,7 +32,8 @@ static def flowSegment(wfp) {
         "segmentation",     // Step 4
         "watershed",        // Step 5
         "quantification",   // Step 6
-        "downstream"]       // Step 7
+        "downstream",       // Step 7
+        "mistyr"]           // Step 8
 
     // Identify starting and stopping indices
     int idxStart = mcsteps.indexOf( wfp['start-at'] )
@@ -65,7 +66,8 @@ static def precomputed(wfp) {
         dearray:            idxStart > 3 && wfp.tma,
         'probability-maps': idxStart == 5,
         segmentation:       idxStart == 6,
-        quantification:     idxStart == 7
+        quantification:     idxStart >= 7,
+        mistyr:             idxStart > 8
     ]
 }
 
@@ -78,7 +80,7 @@ static def precomputed(wfp) {
 static def doirun(step, wfp) {
     // Identify what segment of the pipeline to run
     def (idxStart, idxStop) = flowSegment(wfp)
-
+    
     switch(step) {
         case 'illumination': 
             return(idxStart <= 1 && idxStop >= 1)
@@ -94,8 +96,11 @@ static def doirun(step, wfp) {
             return(idxStart <= 6 && idxStop >= 6)
         case 'downstream':
             return(idxStart <= 7 && idxStop >= 7)
+        case 'mistyr':
+            return(idxStart <= 8 && idxStop >= 8)
         case 'viz':
             return(wfp.viz)
+
         default:
             throw new Exception("Unknown step name ${step}")
     }
